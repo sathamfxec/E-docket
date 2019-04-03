@@ -1,0 +1,13 @@
+.header {
+  background: #4285f4;
+  color: #fff;
+  padding: 18px;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.navbar .navbar-header .navbar-brand .logo {
+	width: 110px;
+}
