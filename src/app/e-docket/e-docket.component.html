@@ -22,16 +22,31 @@
 	<div class="row ocr-form">
 		<form class="form-horizontal">
 			<div class="form-group">
-				<label class="control-label col-sm-3" for="file">Name</label>
-			    <div class="col-sm-3">
+				<label class="control-label col-sm-2" for="empName">Name</label>
+			    <div class="col-sm-2">
 			      <input type="text" class="form-control" id="emp-name" placeholder="Emp Name" name="empName" [(ngModel)]="empName">
 			    </div>
-			    <label class="control-label col-sm-3" for="file">Emp ID</label>
-			    <div class="col-sm-3">
+
+			    <label class="control-label col-sm-2" for="empId">Emp ID</label>
+			    <div class="col-sm-2">
 			      <input type="text" class="form-control" id="emp-id" placeholder="Name" name="empId" [(ngModel)]="empId">
+			    </div>
+
+			    <label class="control-label col-sm-2" for="docType">Document Type</label>
+			    <div class="col-sm-2">
+			    	<div class="radio">
+					  <label><input type="radio" name="sslc" [(ngModel)]="text" (change)="selectDocType($event)" value="SSLC">SSLC</label>
+					</div>
+					<div class="radio">
+					  <label><input type="radio" name="hsc" [(ngModel)]="text" (change)="selectDocType($event)" value="HSC">HSC</label>
+					</div>
+					<div class="radio">
+					  <label><input type="radio" name="pan" [(ngModel)]="text" (change)="selectDocType($event)" value="PAN">PAN CARD</label>
+					</div>
 			    </div>
 			</div>
 		</form>
+
 		<form class="form-horizontal">
 			<div class="form-group">
 
@@ -53,12 +68,12 @@
 			      <input type="file" class="form-control" id="file" placeholder="Max Size 1000 KB" (change)="fileChange($event.target.files)">
 			      <span class="help-block" *ngIf="errorMsg">{{errorMsg}}</span>
 			    </div>
-			    <div class="col-sm-2">
+			    <div class="col-sm-4">
 			      <input type="text" class="form-control" id="dob" placeholder="Register Number" name="regNo" [(ngModel)]="regNo">
 			    </div>
-			    <div class="col-sm-2">
+			    <!-- <div class="col-sm-2">
 			      <input type="text" class="form-control" id="file" placeholder="Date of Birth" name="dob" [(ngModel)]="dob">
-			    </div>
+			    </div> -->
 			    <div *ngIf="processing" class="col-sm-2">
 				    <button type="button" class="btn btn-default">
 			          <i class="fa fa-circle-o-notch fa-spin" style="color:red"></i> 

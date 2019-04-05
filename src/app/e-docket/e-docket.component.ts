@@ -8,7 +8,6 @@ import { EDocketService } from './services/e-docket.service';
 
 declare const gapi: any;
 
-
 @Component({
   selector: 'e-docket',
   templateUrl: './e-docket.component.html',
@@ -27,6 +26,8 @@ export class EDocketComponent implements OnInit {
  private verified: boolean = false;
  private not_verified: boolean = false;
  private errorMsg: string;
+ private docType: string;
+ private text: boolean = false;
 
  constructor(public winRef: WindowRef,
    private router: ActivatedRoute,
@@ -36,15 +37,24 @@ export class EDocketComponent implements OnInit {
  ngOnInit() {}
 
  /**
+  * Method to select the document type before upload.
+  * @memberof EDocketComponent component
+ */
+ selectDocType(event) {
+   event.target.checked;
+   this.docType = event.target.value;
+   console.log(this.docType);
+ }
+ /**
   * Method to defect the file change event.
   * @memberof EDocketComponent component
  */
  fileChange(files: File[]) {
    if(files.length > 0) {
+     this.updateProgress();
      (this.checkFileSize(files[0].size)) ? this.formData.append('file', files[0]) : this.showError();
    }
  }
-
  /**
   * Method to convert the image to text.
   * @memberof EDocketComponent component
@@ -56,7 +66,7 @@ export class EDocketComponent implements OnInit {
           'apiKey':environment.ocrApiKey
       })
    };
-
+   // Invoke OCR service to upload the image
    this.service.ocr(httpOptions, this.formData).subscribe(
      (data:any) => {
         let parsedText = data.ParsedResults[0].ParsedText;
@@ -70,7 +80,6 @@ export class EDocketComponent implements OnInit {
      }
    );
  }
-
  /**
   * Method to process the text.
   * @memberof EDocketComponent component
@@ -81,14 +90,9 @@ export class EDocketComponent implements OnInit {
    let match_words = 0;
    // console.log(response.length);
    while (i < response.length) {
-      // console.log(response[i]);
       if (this.empName === response[i].trim()) {
           hits += 1;
       }
-      // if(match_words === 0 && response[i].search("DATE OF BIRTH / REGISTER NO") !== -1) {
-      //   console.log('IF 1');
-      //   match_words += 1;
-      // }
       if(hits === 1 && match_words !== 0) {
         this.dob = response[i].trim();
         this.regNo = response[i+1].trim();
@@ -98,20 +102,8 @@ export class EDocketComponent implements OnInit {
       }
       i += 1;
    }
-
-   console.log(match_words);
-   console.log(hits);
-   if (hits !== 0) {
-    this.verified = true;
-    this.not_verified = false;
-    this.processing = false;
-   } else {
-     this.verified = false;
-     this.not_verified = true;
-     this.processing = false;
-   }
+   this.updateProgress(hits);
  }
-
  /**
   * Method to check the file size.
   * @memberof EDocketComponent component
@@ -120,7 +112,29 @@ export class EDocketComponent implements OnInit {
    const convert_to_mb = size / 1000;
    return convert_to_mb < 1000;
  }
-
+/**
+  * Method to update the progress of the uploaded image.
+  * @memberof EDocketComponent component
+ */
+ updateProgress(hits?: number) {
+   switch(hits) {
+     case 1:
+      this.verified = true;
+      this.not_verified = false;
+      this.processing = false;
+      break;
+     case 0:
+      this.verified = false;
+      this.not_verified = true;
+      this.processing = false;
+      break;
+     default:
+      this.verified = false;
+      this.not_verified = false;
+      this.processing = false;
+      break;
+   }
+ }
  /**
   * Method to show the error.
   * @memberof EDocketComponent component
@@ -128,5 +142,4 @@ export class EDocketComponent implements OnInit {
  showError(error?: string) {
    this.errorMsg = 'File size exceeds allowed limit max 1KB';
  }
-
 }

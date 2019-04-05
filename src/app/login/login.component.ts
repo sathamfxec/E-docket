@@ -20,7 +20,6 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private zone:NgZone) { 
   }
-
   /**
    * Method to load the client ID to gapi variable
    * @memberof LoginComponent component
@@ -51,5 +50,4 @@ export class LoginComponent implements OnInit {
       });
     });
   }
-
 }
