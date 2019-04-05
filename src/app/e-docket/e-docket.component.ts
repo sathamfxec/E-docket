@@ -94,7 +94,6 @@ export class EDocketComponent implements OnInit {
           hits += 1;
       }
       if(hits === 1 && match_words !== 0) {
-        this.dob = response[i].trim();
         this.regNo = response[i+1].trim();
         match_words = 0;
       } else if (hits === 1 && match_words === 0 && response[i].search("DATE OF BIRTH / REGISTER NO") !== -1) {
