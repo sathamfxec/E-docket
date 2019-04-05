@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { WindowRef } from './../shared/windowRef';
 import { Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from  '@angular/common/http';
+import { EDocketService } from './services/e-docket.service';
 
 declare const gapi: any;
 
@@ -18,8 +19,19 @@ export class EDocketComponent implements OnInit {
  public auth2: any;
  connections: any = [];
  private formData = new FormData();
+ private empName: string = "SATHAM HUSSAIN";
+ private empId: number = 787490;
+ private regNo: number;
+ private dob: string;
+ private processing: boolean = false;
+ private verified: boolean = false;
+ private not_verified: boolean = false;
+ private errorMsg: string;
 
- constructor(public winRef: WindowRef, private router: ActivatedRoute, public http: HttpClient) {}
+ constructor(public winRef: WindowRef,
+   private router: ActivatedRoute,
+   public http: HttpClient,
+   private service: EDocketService) {}
 
  ngOnInit() {}
 
@@ -29,7 +41,7 @@ export class EDocketComponent implements OnInit {
  */
  fileChange(files: File[]) {
    if(files.length > 0) {
-     this.formData.append('file', files[0]);
+     (this.checkFileSize(files[0].size)) ? this.formData.append('file', files[0]) : this.showError();
    }
  }
 
@@ -38,30 +50,83 @@ export class EDocketComponent implements OnInit {
   * @memberof EDocketComponent component
  */
  ocr() {
-   // Need to move this code to e-docket.service.ts file. 
+   this.processing = true;
    const httpOptions = {
       headers: new HttpHeaders({
           'apiKey':environment.ocrApiKey
       })
    };
-   // const data: any = {};
-   this.formData.append('language', environment.language);
-   // this.formData.append('isOverlayRequired', environment.isOverlayRequired);
-   // data.isOverlayRequired = environment.isOverlayRequired;
-   // data.file = '';
-   this.http.post('https://api.ocr.space/parse/image', this.formData, httpOptions)
-    .subscribe(
-        (data:any) => {
-                let parsedText = data.ParsedResults[0].ParsedText;
-                let response = parsedText.split("\r\n");
-                console.log(response);
-                // console.log(data.ParsedResults[0].ParsedText);
-                // console.log(typeof(data.ParsedResults[0].ParsedText));
-                this.formData = new FormData();
-            },
-            error => {
-                console.log(error);
-            }
-    );
+
+   this.service.ocr(httpOptions, this.formData).subscribe(
+     (data:any) => {
+        let parsedText = data.ParsedResults[0].ParsedText;
+        let response = parsedText.split("\r\n");
+        // console.log(response);
+        this.processData(response);
+        this.formData = new FormData();
+     }, error => {
+       let message = '';
+       this.showError(error);
+     }
+   );
  }
+
+ /**
+  * Method to process the text.
+  * @memberof EDocketComponent component
+ */
+ processData(response) {
+   let hits = 0;
+   let i = 0;
+   let match_words = 0;
+   // console.log(response.length);
+   while (i < response.length) {
+      // console.log(response[i]);
+      if (this.empName === response[i].trim()) {
+          hits += 1;
+      }
+      // if(match_words === 0 && response[i].search("DATE OF BIRTH / REGISTER NO") !== -1) {
+      //   console.log('IF 1');
+      //   match_words += 1;
+      // }
+      if(hits === 1 && match_words !== 0) {
+        this.dob = response[i].trim();
+        this.regNo = response[i+1].trim();
+        match_words = 0;
+      } else if (hits === 1 && match_words === 0 && response[i].search("DATE OF BIRTH / REGISTER NO") !== -1) {
+        match_words += 1;
+      }
+      i += 1;
+   }
+
+   console.log(match_words);
+   console.log(hits);
+   if (hits !== 0) {
+    this.verified = true;
+    this.not_verified = false;
+    this.processing = false;
+   } else {
+     this.verified = false;
+     this.not_verified = true;
+     this.processing = false;
+   }
+ }
+
+ /**
+  * Method to check the file size.
+  * @memberof EDocketComponent component
+ */
+ checkFileSize(size) {
+   const convert_to_mb = size / 1000;
+   return convert_to_mb < 1000;
+ }
+
+ /**
+  * Method to show the error.
+  * @memberof EDocketComponent component
+ */
+ showError(error?: string) {
+   this.errorMsg = 'File size exceeds allowed limit max 1KB';
+ }
+
 }

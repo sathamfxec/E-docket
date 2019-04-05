@@ -22,15 +22,57 @@
 	<div class="row ocr-form">
 		<form class="form-horizontal">
 			<div class="form-group">
-			    <label class="control-label col-sm-3" for="file">Upload image (.png or .jpg)</label>
-			    <div class="col-sm-5">
-			      <input type="file" class="form-control" id="file" placeholder="Enter Image" (change)="fileChange($event.target.files)">
+				<label class="control-label col-sm-3" for="file">Name</label>
+			    <div class="col-sm-3">
+			      <input type="text" class="form-control" id="emp-name" placeholder="Emp Name" name="empName" [(ngModel)]="empName">
+			    </div>
+			    <label class="control-label col-sm-3" for="file">Emp ID</label>
+			    <div class="col-sm-3">
+			      <input type="text" class="form-control" id="emp-id" placeholder="Name" name="empId" [(ngModel)]="empId">
+			    </div>
+			</div>
+		</form>
+		<form class="form-horizontal">
+			<div class="form-group">
+
+				<!-- <div class="radio col-sm-2">
+					<label><input type="radio" name="optradio">SSLC</label>
+					<label><input type="radio" name="optradio">HSC</label>
+				</div>
+
+				<label for="sel1">Select list:</label>
+				<select class="form-control" id="sel1">
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
+				</select> -->
+
+			    <label class="control-label col-sm-3" for="file">Image (.png or .jpg -- Max size: 1KB)</label>
+			    <div class="col-sm-3">
+			      <input type="file" class="form-control" id="file" placeholder="Max Size 1000 KB" (change)="fileChange($event.target.files)">
+			      <span class="help-block" *ngIf="errorMsg">{{errorMsg}}</span>
 			    </div>
 			    <div class="col-sm-2">
-			      <input type="text" class="form-control" id="dob" placeholder="Register Number">
+			      <input type="text" class="form-control" id="dob" placeholder="Register Number" name="regNo" [(ngModel)]="regNo">
 			    </div>
 			    <div class="col-sm-2">
-			      <input type="text" class="form-control" id="file" placeholder="Date of Birth">
+			      <input type="text" class="form-control" id="file" placeholder="Date of Birth" name="dob" [(ngModel)]="dob">
+			    </div>
+			    <div *ngIf="processing" class="col-sm-2">
+				    <button type="button" class="btn btn-default">
+			          <i class="fa fa-circle-o-notch fa-spin" style="color:red"></i> 
+			        </button>
+			    </div>
+			    <div *ngIf="verified" class="col-sm-2">
+				    <button type="button" class="btn btn-success btn-sm">
+			          <span class="glyphicon glyphicon-ok"></span> 
+			        </button>
+			    </div>
+			    <div *ngIf="not_verified" class="col-sm-2">
+				    <button type="button" class="btn btn-danger btn-sm">
+			          <span class="glyphicon glyphicon-remove"></span> 
+			        </button>
 			    </div>
   			</div>
 			<div class="form-group"> 

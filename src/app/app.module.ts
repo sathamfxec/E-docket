@@ -9,7 +9,9 @@ import { EDocketComponent } from './e-docket/e-docket.component';
 import { WindowRef } from './shared/windowRef';
 import { AuthenticationService } from './_services';
 // import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
+import { EDocketService } from './e-docket/services/e-docket.service';
 
 import { AuthGuard } from './_guards';
 
@@ -30,11 +32,12 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     // HttpHeaders,
     RouterModule.forRoot(routes)
   ],
   providers: [
-     WindowRef, AuthGuard, AuthenticationService
+     WindowRef, AuthGuard, AuthenticationService, EDocketService
   ],
   bootstrap: [AppComponent],
   exports: [RouterModule]

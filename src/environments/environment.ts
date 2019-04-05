@@ -9,6 +9,7 @@ export const environment = {
 	scope: "profile",
 	apiKey: "AIzaSyDVWjvJ9G6yjhhn51Flrdg-CveGD_mN_no",
 	ocrApiKey: "aca46c6b6288957",
+	altntOcrApiKey: "275664f25e88957", // If the above key is not working then use this key for OCR.
 	language: "eng",
-	isOverlayRequired: false,
+	scale: "true"
 };
