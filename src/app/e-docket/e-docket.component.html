@@ -4,7 +4,7 @@
 	<!-- Dashboard top banner starts -->
 
 	<div class="row top-banner">
-		<div class="col-md-4">
+		<!-- <div class="col-md-4">
 			<img src="assets/images/upload.png">
 			<h3 class="description"><strong>Upload File</strong></h3>
 		</div>
@@ -15,14 +15,93 @@
 		<div class="col-md-4">
 			<img src="assets/images/result.png">
 			<h3 class="description"><strong>Get Results</strong></h3>
-		</div>
+		</div> -->
+		<img src="assets/images/infosys-banner-1524117933772.jpg">
 	</div>
 	<!-- Dashboard top banner ends -->
 
+	<!--Title Start-->
+	<h3 class="text-primary title">E-Docket Automation</h3>
+	<!--Title End-->
+
 	<!-- Dashboard OCR starts -->
 	<div class="row ocr-form">
+		<div class="panel-group">
+		    <div class="panel panel-info doc_selection_head">
+		      <div class="panel-heading"><h4><strong>Document type selection</strong></h4></div>
+		      <div class="panel-body">
+		      	<div class="col-sm-12">
+					<div class="col-sm-1">
+						<label class="radio-inline"><input type="radio" name="sslc" [(ngModel)]="text" (change)="selectDocType($event)" value="SSLC">SSLC</label>
+					</div>
+					<div class="col-sm-1">
+						<label class="radio-inline"><input type="radio" name="hsc" [(ngModel)]="text" (change)="selectDocType($event)" value="HSC">HSC</label>
+					</div>
+					<div class="col-sm-1">
+						<label class="radio-inline"><input type="radio" name="pan" [(ngModel)]="text" (change)="selectDocType($event)" value="PAN">PAN</label>
+					</div>
+					<div class="col-sm-1">
+						<label class="radio-inline"><input type="radio" name="aadhaar" [(ngModel)]="text" (change)="selectDocType($event)" value="AADHAAR">AADHAAR</label>
+					</div>
+				</div>
+		      </div>
+		    </div>
+
+		    <div class="panel panel-info doc_selection_head">
+		      <div class="panel-heading"><h4><strong>Document</strong></h4></div>
+		      <div class="panel-body">
+
+		      	<form class="form-horizontal">
+		      		<div class="form-group"> 
+				      	<label class="control-label col-sm-3" for="file">Image (.png or .jpg -- Max size: 1MB)</label>
+					    <div class="col-sm-6">
+					      <input #myInput [disabled]="enableInpElement" type="file" class="form-control" id="file" placeholder="Max Size 1000 KB" (change)="fileChange($event.target.files)">
+					      <span class="help-block" *ngIf="clientSideerrorMsg">{{clientSideerrorMsg}}</span>
+					    </div>
+
+					    <div *ngIf="processing" class="col-sm-2">
+						    <button type="button" class="btn btn-default">
+					          <i class="fa fa-circle-o-notch fa-spin" style="color:red"></i> 
+					        </button>
+					    </div>
+					    <div *ngIf="verified" class="col-sm-2">
+						    <button type="button" class="btn btn-success btn-sm">
+					          <span class="glyphicon glyphicon-ok"></span> 
+					        </button>
+					    </div>
+					    <div *ngIf="not_verified" class="col-sm-2">
+						    <button type="button" class="btn btn-danger btn-sm">
+					          <span class="glyphicon glyphicon-remove"></span> 
+					        </button>
+					    </div>
+					</div>
+				</form>
+
+			    <form class="form-horizontal">
+				    <div class="form-group"> 
+						<div class="col-sm-offset-3 col-sm-9">
+						  <button type="button" class="btn btn-primary pull-right" (click)="ocr();"><strong>Submit</strong></button>
+						</div>
+					</div>
+				</form>
+
+		      </div>
+		    </div>
+
+		    <!-- Success and error banners starts -->
+			<div class="alert alert-success" *ngIf="successMsg">
+				<strong>{{successMsg}}</strong> 
+			</div>
+
+			<div class="alert alert-danger" *ngIf="errorMsg">
+				<strong>{{errorMsg}}</strong>
+			</div>
+			<!-- Success and error banners ends -->
+		
+		</div>
+	<!--
 		<form class="form-horizontal doc_selection">
-			<!-- <div class="form-group">
+			<div class="form-group">
 				<label class="control-label col-sm-2" for="empName">Name</label>
 			    <div class="col-sm-2">
 			      <input type="text" class="form-control" id="emp-name" placeholder="Emp Name" name="empName" [(ngModel)]="empName">
@@ -48,10 +127,11 @@
 					  <label><input type="radio" name="aadhaar" [(ngModel)]="text" (change)="selectDocType($event)" value="AADHAAR">AADHAAR</label>
 					</div>
 			    </div>
-			</div> -->
+			</div>
+
 			<div class="form-group">
 				<div class="col-sm-12 doc_selection_head">
-					<strong>Document type selection</strong>
+					<h4><strong>Document type selection</strong></h4>
 				</div>
 				<div class="col-sm-12">
 					<div class="col-sm-1">
@@ -69,24 +149,25 @@
 				</div>
 			</div>
 		</form>
-
+	-->
+	<!--
 		<form class="form-horizontal document">
 			<div class="form-group">
 				<div class="col-sm-12 document_head">
-					<strong>Document</strong>
+					<h4><strong>Document</strong></h4>
 				</div>
 
-			    <label class="control-label col-sm-3" for="file">Image (.png or .jpg -- Max size: 1KB)</label>
+			    <label class="control-label col-sm-3" for="file">Image (.png or .jpg -- Max size: 1MB)</label>
 			    <div class="col-sm-6">
 			      <input #myInput [disabled]="enableInpElement" type="file" class="form-control" id="file" placeholder="Max Size 1000 KB" (change)="fileChange($event.target.files)">
 			      <span class="help-block" *ngIf="clientSideerrorMsg">{{clientSideerrorMsg}}</span>
 			    </div>
-			    <!-- <div class="col-sm-4">
+			    <div class="col-sm-4">
 			      <input [disabled]="enableInpElement" type="text" class="form-control" id="dob" placeholder="Register Number" name="regNo" [(ngModel)]="regNo">
-			    </div> -->
-			    <!-- <div class="col-sm-2">
+			    </div>
+			    <div class="col-sm-2">
 			      <input type="text" class="form-control" id="file" placeholder="Date of Birth" name="dob" [(ngModel)]="dob">
-			    </div> -->
+			    </div>
 			    <div *ngIf="processing" class="col-sm-2">
 				    <button type="button" class="btn btn-default">
 			          <i class="fa fa-circle-o-notch fa-spin" style="color:red"></i> 
@@ -109,7 +190,7 @@
 				</div>
 			</div>
 
-			<!-- Success and error banners starts -->
+			Success and error banners starts
 			<div class="alert alert-success" *ngIf="successMsg">
 				<strong>{{successMsg}}</strong> 
 			</div>
@@ -117,9 +198,10 @@
 			<div class="alert alert-danger" *ngIf="errorMsg">
 				<strong>{{errorMsg}}</strong>
 			</div>
-			<!-- Success and error banners ends -->
+			Success and error banners ends
 
 		</form>
+	-->
 	</div>
 	<!-- Dashboard OCR ends -->
 

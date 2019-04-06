@@ -5,7 +5,9 @@
 }
 
 .logo {
-  font-weight: bold;
+  /*font-weight: bold;*/
+  position: fixed;
+  top: 7%;
 }
 
 .navbar .navbar-header .navbar-brand .logo {
