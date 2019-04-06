@@ -25,16 +25,20 @@ export class EDocketComponent implements OnInit {
  private processing: boolean = false;
  private verified: boolean = false;
  private not_verified: boolean = false;
- private errorMsg: string;
+ private clientSideerrorMsg: string;
  private docType: string;
- private text: boolean = false;
+ private enableInpElement: boolean = true;
+ private successMsg: string;
+ private errorMsg: string;
 
  constructor(public winRef: WindowRef,
    private router: ActivatedRoute,
    public http: HttpClient,
    private service: EDocketService) {}
 
- ngOnInit() {}
+ ngOnInit() {
+   console.log(this.winRef);
+ }
 
  /**
   * Method to select the document type before upload.
@@ -43,7 +47,7 @@ export class EDocketComponent implements OnInit {
  selectDocType(event) {
    event.target.checked;
    this.docType = event.target.value;
-   console.log(this.docType);
+   this.enableInpElement = false;
  }
  /**
   * Method to defect the file change event.
@@ -72,7 +76,7 @@ export class EDocketComponent implements OnInit {
         let parsedText = data.ParsedResults[0].ParsedText;
         let response = parsedText.split("\r\n");
         // console.log(response);
-        this.processData(response);
+        this.verifyDocType(response, parsedText);
         this.formData = new FormData();
      }, error => {
        let message = '';
@@ -81,27 +85,70 @@ export class EDocketComponent implements OnInit {
    );
  }
  /**
+  * Method to verify the document.
+  * @memberof EDocketComponent component
+ */
+ verifyDocType(response, parsedText?: string) {
+   switch(this.docType) {
+     case "SSLC":
+      if(parsedText.search(environment.sscl_doc_conf) !== -1) { 
+        this.processText(response, environment.sslc_cer_conf);  
+        this.successMsg = environment.successMsg;
+      } else {
+        this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
+      }
+      break;
+     case "HSC":
+      if(parsedText.search(environment.hsc_doc_conf) !== -1) {     
+        this.processText(response, environment.hsc_cer_conf);  
+        this.successMsg = environment.successMsg;
+      } else {
+        this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
+      }
+      break;
+     case "AADHAAR":
+      if(parsedText.search(environment.aadhaar_doc_conf) !== -1) {
+        this.processText(response, environment.aadhaar_cer_conf);          
+        this.successMsg = environment.successMsg;     
+      } else {
+        this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
+      }
+      break;
+     case "PAN":
+      if(parsedText.search(environment.pan_doc_conf) !== -1) {
+        this.processText(response, environment.pan_cer_conf);  
+        this.successMsg = environment.successMsg;     
+
+      } else {
+        this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
+      }
+      break;
+     default:
+      break;
+   }
+ }
+ /**
   * Method to process the text.
   * @memberof EDocketComponent component
  */
- processData(response) {
+ processText(response, cert_conf) {
+   console.log(this.docType);
    let hits = 0;
    let i = 0;
    let match_words = 0;
-   // console.log(response.length);
    while (i < response.length) {
-      if (this.empName === response[i].trim()) {
-          hits += 1;
-      }
-      if(hits === 1 && match_words !== 0) {
-        this.regNo = response[i+1].trim();
-        match_words = 0;
-      } else if (hits === 1 && match_words === 0 && response[i].search("DATE OF BIRTH / REGISTER NO") !== -1) {
-        match_words += 1;
-      }
-      i += 1;
-   }
-   this.updateProgress(hits);
+    if (this.empName === response[i].trim()) {
+        hits += 1;
+    }
+    if(hits === 1 && match_words !== 0) {
+      this.regNo = (this.docType === "SSLC" || this.docType === "HSC") ? response[i+1].trim() : response[i].trim();        
+      match_words = 0;
+    } else if (hits === 1 && match_words === 0 && response[i].search(cert_conf) !== -1) {
+      match_words += 1;
+    }
+    i += 1;
+  }
+  this.updateProgress(hits);
  }
  /**
   * Method to check the file size.
@@ -139,6 +186,6 @@ export class EDocketComponent implements OnInit {
   * @memberof EDocketComponent component
  */
  showError(error?: string) {
-   this.errorMsg = 'File size exceeds allowed limit max 1KB';
+   this.clientSideerrorMsg = 'File size exceeds allowed limit max 1KB';
  }
 }

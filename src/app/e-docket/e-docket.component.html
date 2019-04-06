@@ -2,7 +2,7 @@
 <div class="container">
 
 	<!-- Dashboard top banner starts -->
-<!--
+
 	<div class="row top-banner">
 		<div class="col-md-4">
 			<img src="assets/images/upload.png">
@@ -17,7 +17,16 @@
 			<h3 class="description"><strong>Get Results</strong></h3>
 		</div>
 	</div>
--->
+
+
+	<div class="alert alert-success" *ngIf="successMsg">
+		<strong>{{successMsg}}</strong> 
+	</div>
+
+	<div class="alert alert-danger" *ngIf="errorMsg">
+		<strong>{{errorMsg}}</strong>
+	</div>
+
 	<!-- Dashboard top banner ends -->
 
 	<!-- Dashboard OCR starts -->
@@ -45,33 +54,22 @@
 					<div class="radio">
 					  <label><input type="radio" name="pan" [(ngModel)]="text" (change)="selectDocType($event)" value="PAN">PAN CARD</label>
 					</div>
+					<div class="radio">
+					  <label><input type="radio" name="aadhaar" [(ngModel)]="text" (change)="selectDocType($event)" value="AADHAAR">AADHAAR</label>
+					</div>
 			    </div>
 			</div>
 		</form>
 
 		<form class="form-horizontal">
 			<div class="form-group">
-
-				<!-- <div class="radio col-sm-2">
-					<label><input type="radio" name="optradio">SSLC</label>
-					<label><input type="radio" name="optradio">HSC</label>
-				</div>
-
-				<label for="sel1">Select list:</label>
-				<select class="form-control" id="sel1">
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-				</select> -->
-
 			    <label class="control-label col-sm-3" for="file">Image (.png or .jpg -- Max size: 1KB)</label>
 			    <div class="col-sm-3">
-			      <input type="file" class="form-control" id="file" placeholder="Max Size 1000 KB" (change)="fileChange($event.target.files)">
-			      <span class="help-block" *ngIf="errorMsg">{{errorMsg}}</span>
+			      <input [disabled]="enableInpElement" type="file" class="form-control" id="file" placeholder="Max Size 1000 KB" (change)="fileChange($event.target.files)">
+			      <span class="help-block" *ngIf="clientSideerrorMsg">{{clientSideerrorMsg}}</span>
 			    </div>
 			    <div class="col-sm-4">
-			      <input type="text" class="form-control" id="dob" placeholder="Register Number" name="regNo" [(ngModel)]="regNo">
+			      <input [disabled]="enableInpElement" type="text" class="form-control" id="dob" placeholder="Register Number" name="regNo" [(ngModel)]="regNo">
 			    </div>
 			    <!-- <div class="col-sm-2">
 			      <input type="text" class="form-control" id="file" placeholder="Date of Birth" name="dob" [(ngModel)]="dob">
@@ -94,7 +92,7 @@
   			</div>
 			<div class="form-group"> 
 				<div class="col-sm-offset-3 col-sm-9">
-				  <button type="button" class="btn btn-default" (click)="ocr();">Submit</button>
+				  <button type="button" class="btn btn-default" (click)="ocr();"><strong>Start OCR</strong></button>
 				</div>
 			</div>
 		</form>
