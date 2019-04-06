@@ -23,6 +23,6 @@ export const environment = {
 	hsc_doc_conf: "HIGHER SECONDARY COURSE CERTIFICATE",
 	aadhaar_doc_conf: "Your Aadhaar No",
 	pan_doc_conf: "INCOME TAX",
-	successMsg: "Document successfully uploaded to the portal",
+	successMsg: "Document successfully uploaded.",
 	errorMsg: "Uploaded file was not a {{docType}} document. Please cross check before upload."
 };

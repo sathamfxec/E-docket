@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { WindowRef } from './../shared/windowRef';
 import { Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -18,7 +18,7 @@ export class EDocketComponent implements OnInit {
  public auth2: any;
  connections: any = [];
  private formData = new FormData();
- private empName: string = "SATHAM HUSSAIN";
+ private empName: string = "SATHAM HUSSAIN M";
  private empId: number = 787490;
  private regNo: number;
  private dob: string;
@@ -30,6 +30,10 @@ export class EDocketComponent implements OnInit {
  private enableInpElement: boolean = true;
  private successMsg: string;
  private errorMsg: string;
+
+
+ @ViewChild('myInput')
+ myInputVariable: ElementRef;
 
  constructor(public winRef: WindowRef,
    private router: ActivatedRoute,
@@ -48,6 +52,7 @@ export class EDocketComponent implements OnInit {
    event.target.checked;
    this.docType = event.target.value;
    this.enableInpElement = false;
+   this.reset("All"); // To reset the form
  }
  /**
   * Method to defect the file change event.
@@ -56,6 +61,7 @@ export class EDocketComponent implements OnInit {
  fileChange(files: File[]) {
    if(files.length > 0) {
      this.updateProgress();
+     this.reset();
      (this.checkFileSize(files[0].size)) ? this.formData.append('file', files[0]) : this.showError();
    }
  }
@@ -92,34 +98,41 @@ export class EDocketComponent implements OnInit {
    switch(this.docType) {
      case "SSLC":
       if(parsedText.search(environment.sscl_doc_conf) !== -1) { 
-        this.processText(response, environment.sslc_cer_conf);  
+        // this.processText(response, environment.sslc_cer_conf);  
+        this.updateProgress(1);
         this.successMsg = environment.successMsg;
       } else {
+        this.updateProgress(0);
         this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
       }
       break;
      case "HSC":
       if(parsedText.search(environment.hsc_doc_conf) !== -1) {     
-        this.processText(response, environment.hsc_cer_conf);  
+        // this.processText(response, environment.hsc_cer_conf); 
+        this.updateProgress(1); 
         this.successMsg = environment.successMsg;
       } else {
+        this.updateProgress(0);
         this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
       }
       break;
      case "AADHAAR":
       if(parsedText.search(environment.aadhaar_doc_conf) !== -1) {
-        this.processText(response, environment.aadhaar_cer_conf);          
+        // this.processText(response, environment.aadhaar_cer_conf);  
+        this.updateProgress(1);        
         this.successMsg = environment.successMsg;     
       } else {
+        this.updateProgress(0);        
         this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
       }
       break;
      case "PAN":
       if(parsedText.search(environment.pan_doc_conf) !== -1) {
-        this.processText(response, environment.pan_cer_conf);  
+        // this.processText(response, environment.pan_cer_conf);  
+        this.updateProgress(1);
         this.successMsg = environment.successMsg;     
-
       } else {
+        this.updateProgress(0);
         this.errorMsg = environment.errorMsg.replace("{{docType}}",this.docType);
       }
       break;
@@ -168,6 +181,7 @@ export class EDocketComponent implements OnInit {
       this.verified = true;
       this.not_verified = false;
       this.processing = false;
+      // this.successMsg = environment.successMsg;
       break;
      case 0:
       this.verified = false;
@@ -187,5 +201,16 @@ export class EDocketComponent implements OnInit {
  */
  showError(error?: string) {
    this.clientSideerrorMsg = 'File size exceeds allowed limit max 1KB';
+ }
+ /**
+  * Method to reset the form.
+  * @memberof EDocketComponent component
+ */
+ reset(all?: string) {
+   this.successMsg = '';
+   this.errorMsg = '';
+   this.formData = new FormData();
+   (all === "All") ? this.myInputVariable.nativeElement.value = "" : "";
+   this.updateProgress();
  }
 }

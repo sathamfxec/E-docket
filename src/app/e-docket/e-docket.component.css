@@ -35,3 +35,31 @@
 .doc_category {
 	text-align: right;
 }
+
+/*Doc selection*/
+.doc_selection_head {
+	margin-bottom: 20px;
+}
+
+.doc_selection {
+	border: 2px dotted;
+	padding: 20px;
+	margin-bottom: 20px;
+}
+
+.doc_selection label {
+	color: #08ab89;
+}
+
+.document_head {
+	margin-bottom: 20px;
+}
+
+.document {
+	border: 2px dotted;
+	padding: 20px;
+}
+
+.document label {
+	color: #08ab89;
+}
